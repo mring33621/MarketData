@@ -1,17 +1,16 @@
 package com.mattring.marketdata;
 
 import com.mattring.marketdata.scans.MaintenanceScan;
+import org.sql2o.Connection;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
-import org.sql2o.Connection;
 
 /**
- *
  * @author Matthew
  */
 public class BulkLoader extends DbAware {
@@ -25,7 +24,7 @@ public class BulkLoader extends DbAware {
                 = "INSERT INTO %s (SYM, DATE, OPEN, HIGH, LOW, CLOSE, VOL) "
                 + "VALUES (:sym, :date, :open, :high, :low, :close, :vol)";
 
-        final Path oldFilesDir = new File("C:\\Data\\old").toPath();
+        final Path oldFilesDir = new File("C:\\Data\\marketdata\\archive").toPath();
         final AtomicInteger fileCount = new AtomicInteger();
 
         Files.list(new File("C:\\Data\\marketdata\\csv").toPath())
@@ -35,13 +34,15 @@ public class BulkLoader extends DbAware {
                     try (Connection con = db.open()) {
                         final String dateStr = p.getFileName().toString().split("_")[1].split(".csv")[0];
                         final int date = Integer.parseInt(dateStr);
-                        System.out.println(date);
+                        final String exch = p.getFileName().toString().split("_")[0];
+                        System.out.println(date + " " + exch);
                         try (Stream<String> filteredLines = Files.lines(p).filter(s -> !s.startsWith("Symbol"))) {
                             filteredLines.forEach(l -> {
                                 final String[] parts = l.split(",");
                                 final Point point = new Point();
                                 final String sym = parts[0];
                                 point.setSym(sym);
+                                point.setExch(exch);
                                 point.setDate(date);
                                 point.setOpen(Double.parseDouble(parts[2]));
                                 point.setHigh(Double.parseDouble(parts[3]));
@@ -66,7 +67,7 @@ public class BulkLoader extends DbAware {
                         throw new RuntimeException(ex);
                     }
                 });
-        
+
         MaintenanceScan.main(new String[0]);
     }
 

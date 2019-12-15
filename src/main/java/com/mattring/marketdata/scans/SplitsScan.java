@@ -1,27 +1,27 @@
 package com.mattring.marketdata.scans;
 
+import com.mattring.marketdata.Pair;
 import com.mattring.marketdata.Point;
 import com.mattring.marketdata.PointsFnFromDb;
+
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
-import javafx.util.Pair;
 
 /**
- *
  * @author Matthew
  */
 public class SplitsScan {
-    
+
     static final PointsFnFromDb pfn = new PointsFnFromDb();
 
     Pair<Set<String>, List<String>> scan(List<String> symsToScan, int startDate) {
 
         final Set<String> splitSyms = new LinkedHashSet<>();
         final List<String> splitSymInfo = new ArrayList<>();
-        
+
         symsToScan.stream().forEachOrdered(s -> {
             List<Point> points = pfn.getAllPointsForSym(s, startDate);
             IntStream.range(1, points.size()).forEachOrdered(i -> {
@@ -44,10 +44,10 @@ public class SplitsScan {
         List<String> syms = new SameDayHighLowSpreadScan().scan(20150101, 1_000_000L, 1.03d, 7.00d);
         Pair<Set<String>, List<String>> pair = sc.scan(syms, 0);
         System.out.println("=============================================");
-        long n = pair.getKey().stream().peek(System.out::println).count();
+        long n = pair.a.stream().peek(System.out::println).count();
         System.out.println(n + " unique split syms");
         System.out.println("---------------------------------------------");
-        n = pair.getValue().stream().peek(System.out::println).count();
+        n = pair.b.stream().peek(System.out::println).count();
         System.out.println(n + " split info items");
         System.out.println("=============================================");
     }

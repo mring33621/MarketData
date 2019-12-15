@@ -19,7 +19,7 @@ public class PointsFnFromDb extends DbAware implements PointsFn {
     public List<Point> getAllPointsForSym(String sym, int startDate) {
         final String tbl = tblFn.apply(sym);
         final String qry
-                = "select sym, date, open, high, low, close, vol from "
+                = "select sym, exch, date, open, high, low, close, vol from "
                 + tbl + " where sym=:sym and date >= :startDate order by date asc";
         List<Point> points = Collections.emptyList();
         try (Connection conn = db.open()) {

@@ -4,14 +4,14 @@ package com.mattring.marketdata;
 import java.io.Serializable;
 
 /**
- *
  * @author Matthew
  */
 public class Point implements Serializable {
-    
-    private static final long serialVersionUID = 1L;
-    
+
+    private static final long serialVersionUID = 2L;
+
     private String sym;
+    private String exch;
     private int date;
     private double open;
     private double high;
@@ -25,6 +25,14 @@ public class Point implements Serializable {
 
     public void setSym(String sym) {
         this.sym = sym;
+    }
+
+    public String getExch() {
+        return exch;
+    }
+
+    public void setExch(String exch) {
+        this.exch = exch;
     }
 
     public int getDate() {
@@ -74,17 +82,24 @@ public class Point implements Serializable {
     public void setVol(long vol) {
         this.vol = vol;
     }
-    
+
     public double[] getPriceArray() {
-        return new double[] {
-            open, high, low, close
+        return new double[]{
+                open, high, low, close
         };
     }
 
     @Override
     public String toString() {
-        return "Point{" + "sym=" + sym + ", date=" + date + ", open=" + open + ", high=" + high + ", low=" + low + ", close=" + close + ", vol=" + vol + '}';
+        return "Point{" +
+                "sym='" + sym + '\'' +
+                ", exch='" + exch + '\'' +
+                ", date=" + date +
+                ", open=" + open +
+                ", high=" + high +
+                ", low=" + low +
+                ", close=" + close +
+                ", vol=" + vol +
+                '}';
     }
-    
-    
 }

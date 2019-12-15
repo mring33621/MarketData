@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.mattring</groupId>
     <artifactId>MarketData</artifactId>
-    <version>1.0</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -14,17 +14,27 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.4.190</version>
+            <version>1.4.200</version>
         </dependency>
         <dependency>
             <groupId>org.sql2o</groupId>
             <artifactId>sql2o</artifactId>
-            <version>1.5.4</version>
+            <version>1.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>3.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>28.1-jre</version>
         </dependency>
         <dependency>
             <groupId>org.uncommons.maths</groupId>
             <artifactId>uncommons-maths</artifactId>
-            <version>1.2.2</version>
+            <version>1.2.2a</version>
             <exclusions>
                 <exclusion>
                     <groupId>jfree</groupId>
@@ -35,7 +45,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.10</version>
+            <version>4.12</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

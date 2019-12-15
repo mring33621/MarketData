@@ -37,7 +37,7 @@ public class SimpleAvgVolumeScan extends DbAware {
     }
 
     public static void main(String[] args) {
-        long n = new SimpleAvgVolumeScan().scan(20150801, 1_000_000L)
+        long n = new SimpleAvgVolumeScan().scan(20170101, 1_000_000L)
                 .stream()
                 .peek(System.out::println)
                 .count();

@@ -6,17 +6,13 @@
 package com.mattring.marketdata.scans;
 
 import com.mattring.marketdata.DbAware;
+import com.mattring.marketdata.FullPointRowMapper;
 import com.mattring.marketdata.Point;
 import com.mattring.marketdata.PointsToDateSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import org.sql2o.Connection;
+
+import java.util.*;
 
 /**
- *
  * @author Matthew
  */
 public class DateMisalignmentScan extends DbAware {
@@ -27,30 +23,22 @@ public class DateMisalignmentScan extends DbAware {
         final String tbl2 = tblFn.apply(sym2);
 
         final String qry
-                = "select a.* from %s a "
-                + "where a.sym=:sym "
-                + "and a.date between :startDate and :endDate "
-                + "order by a.date asc";
+                = "select sym, exch, date, open, high, low, close, vol from %s "
+                + "where sym=? "
+                + "and date between ? and ? "
+                + "order by date asc";
 
-        List<Point> dates1 = null;
-        List<Point> dates2 = null;
+        List<Point> dates1 = JDBC_TEMPLATE.query(
+                String.format(qry, tbl1),
+                new Object[]{sym1, startDate, endDate},
+                new FullPointRowMapper()
+        );
 
-        try (Connection conn = db.open()) {
-
-            dates1
-                    = conn.createQuery(String.format(qry, tbl1))
-                    .addParameter("sym", sym1)
-                    .addParameter("startDate", startDate)
-                    .addParameter("endDate", endDate)
-                    .executeAndFetch(Point.class);
-            dates2
-                    = conn.createQuery(String.format(qry, tbl2))
-                    .addParameter("sym", sym2)
-                    .addParameter("startDate", startDate)
-                    .addParameter("endDate", endDate)
-                    .executeAndFetch(Point.class);
-
-        }
+        List<Point> dates2 = JDBC_TEMPLATE.query(
+                String.format(qry, tbl2),
+                new Object[]{sym2, startDate, endDate},
+                new FullPointRowMapper()
+        );
 
         return checkDateAlignment(dates1, dates2, sym1, sym2);
     }

@@ -1,11 +1,12 @@
 package com.mattring.marketdata;
 
-import java.util.Collections;
+import org.springframework.jdbc.core.RowMapper;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
-import org.sql2o.Connection;
 
 /**
- *
  * @author Matthew
  */
 public class PointsFnFromDb extends DbAware implements PointsFn {
@@ -20,16 +21,8 @@ public class PointsFnFromDb extends DbAware implements PointsFn {
         final String tbl = tblFn.apply(sym);
         final String qry
                 = "select sym, exch, date, open, high, low, close, vol from "
-                + tbl + " where sym=:sym and date >= :startDate order by date asc";
-        List<Point> points = Collections.emptyList();
-        try (Connection conn = db.open()) {
-            points
-                    = conn
-                    .createQuery(qry)
-                    .addParameter("sym", sym)
-                    .addParameter("startDate", startDate)
-                    .executeAndFetch(Point.class);
-        }
+                + tbl + " where sym=? and date >=? order by date asc";
+        final List<Point> points = JDBC_TEMPLATE.query(qry, new Object[]{sym, startDate}, new FullPointRowMapper());
         return points;
     }
 

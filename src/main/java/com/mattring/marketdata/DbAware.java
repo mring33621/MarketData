@@ -4,16 +4,14 @@ package com.mattring.marketdata;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.h2.jdbcx.JdbcDataSource;
-import org.sql2o.Sql2o;
-
-import javax.sql.DataSource;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  * @author Matthew
  */
 public class DbAware {
 
-    protected final static Sql2o db;
+    protected final static JdbcTemplate JDBC_TEMPLATE;
 
     static {
         final int cacheSizeKb = Integer.getInteger("cacheSizeKb", 10000); // 10MB default
@@ -26,10 +24,11 @@ public class DbAware {
         config.setUsername("sa");
         config.setPassword("");
         config.setMaximumPoolSize(1); // our H2 only allows 1 connection
+        config.setAutoCommit(true); // I'm being lazy
 
         final HikariDataSource pooledDataSource = new HikariDataSource(config);
 
-        db = new Sql2o(pooledDataSource); // supposedly thread safe
+        JDBC_TEMPLATE = new JdbcTemplate(pooledDataSource);
     }
 
     protected final static SymToDBTableFn tblFn = new SymToDBTableFn();

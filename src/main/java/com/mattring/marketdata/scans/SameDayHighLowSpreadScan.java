@@ -2,13 +2,12 @@ package com.mattring.marketdata.scans;
 
 import com.mattring.marketdata.AllTablesFn;
 import com.mattring.marketdata.DbAware;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.sql2o.Connection;
 
 /**
- *
  * @author Matthew
  */
 public class SameDayHighLowSpreadScan extends DbAware {
@@ -17,26 +16,20 @@ public class SameDayHighLowSpreadScan extends DbAware {
 
         List<String> candidateSyms = Collections.emptyList();
 
-        try (Connection conn = db.open()) {
-
-            candidateSyms = new AllTablesFn().listAll().stream().map(tbl -> {
-                final String qry
-                        = "select sym from " + tbl
-                        + " where date >= :startDate group by sym "
-                        + "having AVG(vol) > :avgVol "
-                        + "and AVG(close) > :minAvgClose "
-                        + "and AVG(COALESCE(high / NULLIF(low,0), 0)) > :avgHLRatio";
-                List<String> syms
-                        = conn.createQuery(qry)
-                        .addParameter("startDate", startDate)
-                        .addParameter("avgVol", avgVol)
-                        .addParameter("minAvgClose", minAvgClose)
-                        .addParameter("avgHLRatio", avgHLRatio)
-                        .executeAndFetch(String.class);
-                return syms;
-            }).flatMap(s -> s.stream()).collect(Collectors.toList());
-
-        }
+        candidateSyms = new AllTablesFn().listAll().stream().map(tbl -> {
+            final String qry
+                    = "select sym from " + tbl
+                    + " where date >= ? group by sym "
+                    + "having AVG(vol) > ? "
+                    + "and AVG(close) > ? "
+                    + "and AVG(COALESCE(high / NULLIF(low,0), 0)) > ?";
+            List<String> syms =
+                    JDBC_TEMPLATE.query(
+                            qry,
+                            new Object[]{startDate, avgVol, minAvgClose, avgHLRatio},
+                            (rs, i) -> rs.getString(1));
+            return syms;
+        }).flatMap(s -> s.stream()).collect(Collectors.toList());
 
         return candidateSyms;
     }

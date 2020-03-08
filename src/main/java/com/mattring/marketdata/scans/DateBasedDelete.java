@@ -2,32 +2,25 @@ package com.mattring.marketdata.scans;
 
 import com.mattring.marketdata.AllTablesFn;
 import com.mattring.marketdata.DbAware;
+
 import java.util.concurrent.atomic.AtomicLong;
-import org.sql2o.Connection;
 
 /**
- *
  * @author Matthew
  */
 public class DateBasedDelete extends DbAware {
 
     long delete(int startDateInclusive) {
-        
+
         final AtomicLong delCountTables = new AtomicLong();
 
-        try (Connection conn = db.open()) {
-
-            new AllTablesFn().listAll().stream().forEach(tbl -> {
-                final String qry
-                        = "delete from " + tbl
-                        + " where date >= :startDate";
-                conn.createQuery(qry)
-                        .addParameter("startDate", startDateInclusive)
-                        .executeUpdate();
-                delCountTables.incrementAndGet();
-            });
-
-        }
+        new AllTablesFn().listAll().stream().forEach(tbl -> {
+            final String delSql
+                    = "delete from " + tbl
+                    + " where date >= ?";
+            JDBC_TEMPLATE.update(delSql, startDateInclusive);
+            delCountTables.incrementAndGet();
+        });
 
         return delCountTables.get();
     }

@@ -3,7 +3,6 @@ package com.mattring.marketdata;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.h2.jdbcx.JdbcDataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
@@ -15,12 +14,9 @@ public class DbAware {
 
     static {
         final int cacheSizeKb = Integer.getInteger("cacheSizeKb", 10000); // 10MB default
-        final String dbUrl = String.format("jdbc:h2:file:C:/Data/marketdata/db/db;CACHE_SIZE=%d", cacheSizeKb);
-        final JdbcDataSource basicDataSource = new JdbcDataSource();
-        basicDataSource.setURL(dbUrl);
-
+        final String dbUrl = String.format("jdbc:h2:file:C:/Data/marketdata/db;CACHE_SIZE=%d", cacheSizeKb);
         final HikariConfig config = new HikariConfig();
-        config.setDataSource(basicDataSource);
+        config.setJdbcUrl(dbUrl);
         config.setUsername("sa");
         config.setPassword("");
         config.setMaximumPoolSize(1); // our H2 only allows 1 connection

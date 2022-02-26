@@ -1,12 +1,14 @@
 package com.mattring.marketdata;
 
 import com.google.common.base.Strings;
+import com.mattring.marketdata.misc.ExchangeDate;
 import com.mattring.marketdata.scans.MaintenanceScan;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
@@ -19,6 +21,12 @@ public class BulkLoader extends DbAware {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
+
+        final String qryForMaxDates =
+                "select max(date) as theDate, EXCH from POINTS_Q where EXCH in (select distinct EXCH from POINTS_Q) group by EXCH";
+
+        List<ExchangeDate> maxDates = JDBC_TEMPLATE.query(qryForMaxDates, ExchangeDate.asRowMapper());
+        System.out.println("current Max Date in DB: " + maxDates);
 
         final String insertTemplate
                 = "INSERT INTO %s (EXCH, SYM, DATE, OPEN, HIGH, LOW, CLOSE, VOL) "
@@ -80,6 +88,9 @@ public class BulkLoader extends DbAware {
                 });
 
         MaintenanceScan.main(new String[0]);
+
+        maxDates = JDBC_TEMPLATE.query(qryForMaxDates, ExchangeDate.asRowMapper());
+        System.out.println("new Max Date in DB: " + maxDates);
     }
 
 }

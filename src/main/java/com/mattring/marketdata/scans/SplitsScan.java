@@ -17,7 +17,7 @@ public class SplitsScan {
 
     static final PointsFnFromDb pfn = new PointsFnFromDb();
 
-    Pair<Set<String>, List<String>> scan(List<String> symsToScan, int startDate) {
+    public Pair<Set<String>, List<String>> scan(List<String> symsToScan, int startDate) {
 
         final Set<String> splitSyms = new LinkedHashSet<>();
         final List<String> splitSymInfo = new ArrayList<>();

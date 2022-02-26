@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class TruncatePoints extends DbAware {
 
-    long truncate() {
+    public long truncate() {
 
         final AtomicLong delCountTables = new AtomicLong();
 

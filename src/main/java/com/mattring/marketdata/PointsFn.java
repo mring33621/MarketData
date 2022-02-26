@@ -12,5 +12,7 @@ public interface PointsFn {
     List<Point> getAllPointsForSym(String sym);
 
     List<Point> getAllPointsForSym(String sym, int startDate);
+
+    List<Point> getAllPointsForSym(String sym, int numRows, int offset);
     
 }

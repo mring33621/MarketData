@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
  */
 public class SimpleAvgVolumeScan extends DbAware {
 
-    List<String> scan(int startDate, long avgVol) {
+    public List<String> scan(int startDate, long avgVol) {
 
         List<String> candidateSyms = Collections.emptyList();
 

@@ -48,5 +48,10 @@ public class PointsFnFromCsv implements PointsFn {
                 .filter(p -> p.getDate() >= startDate)
                 .collect(Collectors.toList());
     }
-    
+
+    @Override
+    public List<Point> getAllPointsForSym(String sym, int numRows, int offset) {
+        // test for off-by-one
+        return getAllPointsForSym(sym).subList(offset, numRows + offset);
+    }
 }

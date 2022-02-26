@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
  */
 public class SameDayHighLowSpreadScan extends DbAware {
 
-    List<String> scan(int startDate, long avgVol, double avgHLRatio, double minAvgClose) {
+    public List<String> scan(int startDate, long avgVol, double avgHLRatio, double minAvgClose) {
 
         List<String> candidateSyms = Collections.emptyList();
 

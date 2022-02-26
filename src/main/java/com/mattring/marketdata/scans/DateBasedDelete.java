@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class DateBasedDelete extends DbAware {
 
-    long delete(int startDateInclusive) {
+    public long delete(int startDateInclusive) {
 
         final AtomicLong delCountTables = new AtomicLong();
 
